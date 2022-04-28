@@ -1,0 +1,63 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace wechatmore
+{
+  
+    public partial class Form1 : Form
+    {
+        string dllPath = System.AppDomain.CurrentDomain.BaseDirectory.ToString() + "\\wechathelper.dll";
+
+        [DllImport("wechatload.dll")]
+        public static extern int WeChatMultiOpen(string dllPath);
+
+        [DllImport("wechatload.dll")]
+        public static extern int WeChatInject(string dllPath);
+
+        public Form1()
+        {
+            InitializeComponent();
+        }
+        int i = 0;
+        /// <summary>
+        /// 打开新微信
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnopennew_Click(object sender, EventArgs e)
+        {
+            int pid = WeChatMultiOpen(dllPath);
+            if (pid > 0)
+            {
+                i++;
+                this.txtlog.AppendText("进程："+pid + "，成功打开了" + i + "个微信！" + Environment.NewLine);
+            }
+            else
+            {
+                MessageBox.Show("打开失败");
+            }
+        }
+
+        /// <summary>
+        /// 注入已打开的微信
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btninitwx_Click(object sender, EventArgs e)
+        {
+            int issuc = WeChatInject(dllPath);
+            if (issuc > 0)
+            {
+                this.txtlog.AppendText("注入成功！" + Environment.NewLine);
+            }
+        }
+    }
+}
